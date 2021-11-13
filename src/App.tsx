@@ -1,16 +1,22 @@
 import React from 'react';
 
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import { HomePage } from './pages/Home';
-import { PageTwo } from './pages/PageTwo';
+import { HashRouter, Switch, Route } from 'react-router-dom';
+import { GamePage } from './pages/GamePage';
+import { GameStoryPage } from './pages/GameStoryPage';
+
+console.log("App.tsx loaded")
 
 const App = () => (
-  <BrowserRouter>
-    <Switch>
-      <Route path="/" exact component={HomePage} />
-      <Route path="/page2" exact component={PageTwo} />
-    </Switch>
-  </BrowserRouter>
+  <div className="container">
+    <HashRouter>
+      <Switch>
+        <Route path="/story/:storyId" component={GameStoryPage} />
+        <Route path="/story" component={GameStoryPage} />
+        <Route path="/:storyHash" component={GamePage} />
+        <Route path="/" component={GamePage} />
+      </Switch>
+    </HashRouter>
+  </div>
 );
 
 export default App;
