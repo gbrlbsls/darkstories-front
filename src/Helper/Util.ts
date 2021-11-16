@@ -1,5 +1,6 @@
-export function getUrlParam(param: string) {
-	return new URLSearchParams(window.location.search).get(param);
+export function buildHashUrl(path: string) {
+  console.log(window.location)
+  return `${window.location.host}${window.location.pathname}#${path}`;
 }
 
 export function copyTextToClipboard(text: string) {

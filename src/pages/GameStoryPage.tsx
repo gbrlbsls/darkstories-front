@@ -1,8 +1,6 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-import { withRouter } from "react-router";
-
-import React, { Component, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Game from '../Component/Game';
 import DarkStoriesApi from '../Service/DarkStoriesApi';
 
@@ -14,28 +12,14 @@ interface ParamTypes {
   storyId: string|undefined
 }
 
-interface Props {
-  
-}
-interface State {
-  story: {
-    title: string, content: string, resolution: string
-  }
-}
-
-function GameStoryPage(props: Props) {
+function GameStoryPage() {
 
   const {storyId} = useParams<ParamTypes>();   
   let [state, setState] = useState({story: {title:"-",content:"-", resolution: ""}, loading: true});
 
   console.log("gameStory.mount")
   
-  useEffect(loadStory, []);
-  useEffect(loadResolution, []);
-
-  function loadStory() {
-    
-
+  useEffect(() => {
     if (storyId == null)
       return;
 
@@ -45,8 +29,8 @@ function GameStoryPage(props: Props) {
         console.log({err});
         setState({story: {title:"Falha ao carregar...",content:"-", resolution: ""}, loading: false});
       })
-
-  }
+  }, [storyId]);
+  useEffect(loadResolution, []);
 
   function loadResolution() {
     if (window.story == null)

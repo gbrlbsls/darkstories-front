@@ -1,4 +1,4 @@
-export default class {
+class API {
 
 	static baseUrl: String = "";
 	static _postRequestOptions: RequestInit = {
@@ -27,3 +27,5 @@ export default class {
 	}
 
 }
+
+export default API;

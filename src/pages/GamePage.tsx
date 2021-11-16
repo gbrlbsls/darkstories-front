@@ -1,10 +1,9 @@
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Game from '../Component/Game';
 
-import React, { Component, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import DarkStoriesApi from '../Service/DarkStoriesApi';
-import { copyTextToClipboard, getCurrentPath, getUrlParam } from '../Helper/Util';
-import { render } from '@testing-library/react';
+import { buildHashUrl, copyTextToClipboard, getCurrentPath } from '../Helper/Util';
 
 interface ParamTypes {
   storyHash: string|undefined
@@ -15,39 +14,44 @@ declare global {
 }
 
 export function GamePage() {
-  let history = useHistory();
-  const [state, setState] = useState({story:{id:0,title:"",content:"", resolution: "",hash:0}, loading: true})
+  const [state, setState] = useState({story:{id:0,title:"",content:"", resolution: "",hash:0}, loading: true, hiddenResolution: true })
   const {storyHash} = useParams<ParamTypes>();
 
-  useEffect(setup, []);
-
-  function setup() {
-    if (storyHash == null)
+  useEffect(() => {
+    function componentDidMount() {
+      if (storyHash == null)
       return newGame();
     
-    return loadGame();
-  }
+      return loadGame();
+    };
+    componentDidMount();
+  }, []);
 
   function loadGame() {
-    window.history.replaceState({}, document.title, "/" + "");
+    window.history.replaceState({}, document.title,  window.location.href.replace(window.location.hash, "#"));
+    
 		DarkStoriesApi.newGame(storyHash).then(res => {
-			setState({story: res.story, loading: false});
+			setState({...state, story: res.story, loading: false});
       window.story = res.story;
 		}).catch(err => {
 			console.log({err});
-			setState({loading: false, story: {id:0,title:"Algo deu errado...",content:"Não foi possível obter uma história...", resolution: "Você se deu mal",hash:0}});
+			setState({...state, loading: false, story: {id:0,title:"Algo deu errado...",content:"Não foi possível obter uma história...", resolution: "Você se deu mal",hash:0}});
 		})
   }
 
   function newGame() {
-    setState({...state, loading: true});
+    setState({...state, loading: true, hiddenResolution: true});
     DarkStoriesApi.newGame().then(res => {
-      setState({story: res.story, loading: false});
+      setState({...state, story: res.story, loading: false});
       window.story = res.story;
     }).catch(err => {
       console.log({err});
-      setState({loading: false, story: {id:0,title:"Algo deu errado...",content:"Não foi possível obter uma história...", resolution: "Você se deu mal",hash:0}});
+      setState({...state, loading: false, story: {id:0,title:"Algo deu errado...",content:"Não foi possível obter uma história...", resolution: "Você se deu mal",hash:0}});
     })
+  }
+
+  function showResolution(e: any) {
+    setState({...state, hiddenResolution: !state.hiddenResolution});
   }
 
   function openResolution(e: any) {
@@ -56,40 +60,60 @@ export function GamePage() {
   }
 
   function shareStory() {
-    copyTextToClipboard(`${getCurrentPath()}story/${window.story.id}`);
+    copyTextToClipboard(buildHashUrl(`story/${window.story.id}`));
     alert("Link para história copiado!")
   }
 
   function copyStoryHash() {
-    copyTextToClipboard(`${getCurrentPath()}${window.story.hash}`);
+    copyTextToClipboard(buildHashUrl(`hash/${window.story.hash}`));
     alert("Link para jogo da história copiado!")
   }
 
   function render() {
     return (
       <div>
-        <Game title={state.story.title} content={state.story.content} loading={state.loading}></Game>
-        <hr></hr>
-        <div className="row">
-          <div className="btn-group-vertical">
-
-            <div className="btn btn-outline-light" onClick={openResolution}>
-              Abrir resolução
-            </div>
-
-            <div className="btn btn-outline-light" onClick={newGame}>
-              Novo jogo
-            </div>
-
-            <div className="btn btn-outline-light" onClick={shareStory}>
-              Compartilhar
-            </div>
-
-            <div className="btn btn-outline-light" onClick={copyStoryHash}>
-              Copiar jogo
-            </div>
-
+        <div className="row row-cols-2">
+          <div className="col-12 col-md-8">
+            <Game title={state.story.title} content={state.story.content} loading={state.loading}></Game>
+            {
+              !state.hiddenResolution &&
+              <>
+              <hr></hr>
+              <p className="text-start lead fs-6">
+                {state.story.resolution}
+              </p>
+              </>
+            }
           </div>
+
+          <div className="col-12 col-md-4">
+            <div className="btn-group-vertical w-100 mt-3 pt-5">
+              <button className="btn btn-outline-light text-md-start" onClick={showResolution} disabled={state.loading}>
+                Mostrar resolução
+              </button>
+
+              <button className="btn btn-outline-light text-md-start" onClick={openResolution} disabled={state.loading}>
+                Abrir resolução
+              </button>
+
+              <div className="mb-1"></div>
+              
+              <button className="btn btn-outline-light text-md-start" onClick={newGame} disabled={state.loading}>
+                Novo jogo
+              </button>
+
+              <button className="btn btn-outline-light text-md-start" onClick={shareStory} disabled={state.loading}>
+                Compartilhar
+              </button>
+
+              <div className="mb-1"></div>
+
+              <button className="btn btn-outline-light text-md-start" onClick={copyStoryHash} disabled={state.loading}>
+                Copiar jogo
+              </button>
+            </div>
+          </div>
+          
         </div>
       </div>
     )

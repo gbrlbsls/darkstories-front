@@ -1,6 +1,6 @@
 import Api from "./Api";
 
-export default class extends Api{
+class DarkStoriesApi extends Api{
 	static baseUrl: String = "https://hidden-wildwood-83104.herokuapp.com";
 	static _getRequestOptions: RequestInit = {
 		method: 'GET',
@@ -23,3 +23,5 @@ export default class extends Api{
 	}
 
 }
+
+export default DarkStoriesApi;

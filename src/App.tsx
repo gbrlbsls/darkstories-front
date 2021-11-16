@@ -12,7 +12,7 @@ const App = () => (
       <Switch>
         <Route path="/story/:storyId" component={GameStoryPage} />
         <Route path="/story" component={GameStoryPage} />
-        <Route path="/:storyHash" component={GamePage} />
+        <Route path="/hash/:storyHash" component={GamePage} />
         <Route path="/" component={GamePage} />
       </Switch>
     </HashRouter>
