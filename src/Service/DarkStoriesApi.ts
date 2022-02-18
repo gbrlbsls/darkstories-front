@@ -2,10 +2,6 @@ import Api from "./Api";
 
 class DarkStoriesApi extends Api{
 	static baseUrl: String = "https://hidden-wildwood-83104.herokuapp.com";
-	static _getRequestOptions: RequestInit = {
-		method: 'GET',
-		mode: "cors",
-	}
 
 	static async newGame(storyHash: string|null = null) {
 
