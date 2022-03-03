@@ -39,7 +39,7 @@ export function GamePage() {
 
     DarkStoriesApi.newGame(storyHash)
       .then((res) => {
-        setState({ ...state, story: res.story, loading: false });
+        setState({ ...state, story: res.story, loading: false, hiddenResolution: true });
         window.story = res.story;
       })
       .catch((err) => {
@@ -62,7 +62,7 @@ export function GamePage() {
     setState({ ...state, loading: true, hiddenResolution: true });
     DarkStoriesApi.newGame()
       .then((res) => {
-        setState({ ...state, story: res.story, loading: false });
+        setState({ ...state, story: res.story, loading: false, hiddenResolution: true });
         window.story = res.story;
       })
       .catch((err) => {
