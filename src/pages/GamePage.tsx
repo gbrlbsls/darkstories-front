@@ -39,7 +39,9 @@ export function GamePage() {
 
     DarkStoriesApi.newGame(storyHash)
       .then((res) => {
-        setState({ ...state, story: res.story, loading: false, hiddenResolution: true });
+        setState((state) => 
+          ({ ...state, story: res.story, loading: false, hiddenResolution: true })
+        );
         window.story = res.story;
       })
       .catch((err) => {
@@ -59,10 +61,10 @@ export function GamePage() {
   }
 
   function newGame() {
-    setState({ ...state, loading: true, hiddenResolution: true });
+    setState((state) => ({ ...state, loading: true, hiddenResolution: true }));
     DarkStoriesApi.newGame()
       .then((res) => {
-        setState({ ...state, story: res.story, loading: false, hiddenResolution: true });
+        setState((state) => ({ ...state, story: res.story, loading: false, hiddenResolution: true }));
         window.story = res.story;
       })
       .catch((err) => {
@@ -82,7 +84,7 @@ export function GamePage() {
   }
 
   function showResolution(e: any) {
-    setState({ ...state, hiddenResolution: !state.hiddenResolution });
+    setState((state) => ({ ...state, hiddenResolution: !state.hiddenResolution }));
   }
 
   function openResolution(e: any) {
